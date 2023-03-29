@@ -6,7 +6,10 @@
 			<div class="card">
 				<div class="card-header">
 					<h1>Listado de productos</h1>
-					<a href="{{route('products.create')}}" class="btn btn-success btn-sm float-right">Nuevo Producto</a>
+					@can('create_product')
+                        <a href="{{route('products.create')}}" class="btn btn-success btn-sm float-right">Nuevo Producto</a>
+
+                    @endcan
 				</div>
 				<div class="card-body">
 					@if(session('info'))
@@ -17,22 +20,30 @@
 					@endif
 					<table class="table table-hover table-sm">
 						<thead>
+                            <th>Id</th>
 							<th>Descripcion</th>
 							<th>Precio $</th>
+                            <th>Acciones</th>
 						</thead>
 						<tbody>
 							@foreach($products as $product)
 							<tr>
+                                <td>{{$product->id}}</td>
 								<td>{{$product->description}}</td>
 								<td>$ {{$product->price}}</td>
 
 								<td>
-									<a class="btn btn-warning" href="{{route('admin.products.edit', $product->id)}}" title="">Editar</a>
-									<a href="javascript: document.getElementById('delete-{{ $product->id }}').submit()" class="btn btn-danger btn-sm" title="">Eliminar</a></td>
-								<form id='delete-{{ $product->id }}' action="{{route('products.destroy', $product->id)}}" method="post">
-									@method('delete')
-									@csrf
-								</form>
+                                    @can('edit_product')
+                                        <a class="btn btn-warning" href="{{route('admin.products.edit', $product->id)}}" title="">Editar</a>
+                                    @endcan
+
+									@can('delete_product')
+                                        <a href="javascript: document.getElementById('delete-{{ $product->id }}').submit()" class="btn btn-danger btn-sm" title="">Eliminar</a></td>
+                                        <form id='delete-{{ $product->id }}' action="{{route('products.destroy', $product->id)}}" method="post">
+                                            @method('delete')
+                                            @csrf
+                                        </form>
+                                    @endcan
 
 							</tr>
 							@endforeach

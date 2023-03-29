@@ -17,7 +17,7 @@ class IsAdminMiddleware
     public function handle(Request $request, Closure $next)
     {
 
-        if(!auth()->check() || auth()->user()->role!='admin'){
+        if(!auth()->check() || (auth()->user()->role!='admin' && auth()->user()->role!='supplier')){
             abort(403);
         }
         return $next($request);
